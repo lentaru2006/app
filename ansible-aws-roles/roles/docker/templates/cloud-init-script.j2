@@ -1,0 +1,45 @@
+#!/bin/bash
+
+sudo yum makecache
+sudo yum install -y docker
+sudo yum install -y python-pip
+sudo pip install docker-compose
+sudo usermod -aG docker ec2-user
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo mkdir -p /opt/registry
+
+sudo cat << EOF > /opt/docker-compose.yml
+  app:
+    image: registry:2
+    restart: on-failure
+    volumes:
+      - /opt/registry:/var/lib/registry
+    ports:
+      - 5000:5000
+EOF
+
+sudo cat << EOF > /etc/systemd/system/docker-compose.service
+[Unit]
+Description=Docker Compose container starter
+After=docker.service network-online.target
+Requires=docker.service network-online.target
+
+[Service]
+WorkingDirectory=/opt
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStart=/bin/docker-compose up -d
+
+ExecStop=/bin/docker-compose down
+
+ExecReload=/bin/docker-compose up -d
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+sudo systemctl enable docker-compose.service
+sudo systemctl start docker-compose.service

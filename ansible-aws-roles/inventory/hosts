@@ -1,0 +1,7 @@
+[localhost]
+127.0.0.1
+
+[docker_registry]
+34.248.99.73
+[webserver]
+54.229.226.77

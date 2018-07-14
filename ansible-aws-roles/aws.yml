@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no   
+  roles:
+    - { role: vpc, tags: vpc }
+    - { role: ec2sg, tags: ec2sg }
+    - { role: ec2key, tags: ec2key }
+    - { role: docker, tags: docker }
+    - { role: ec2instance, tags: ec2instance }
+    - { role: elb, tags: elb }
+    - { role: rds, tags: rds }
